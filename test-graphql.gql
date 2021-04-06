@@ -1,0 +1,59 @@
+# add Author
+mutation {
+  addAuthor(name: "Anah", age: 22) {
+    name
+    age
+  }
+}
+
+# add Book
+mutation {
+  addBook(name: "Anah", pages: 22, authorID: "606b3f279640371e601f8a09") {
+    name
+    pages
+  }
+}
+
+# Get Book with ID
+{
+  book(id: "606b3f839640371e601f8a0a") {
+    id
+    name
+    pages
+    author {
+      id
+      name
+      age
+    }
+  }
+}
+
+# Get all books
+{
+  books {
+    id
+    name
+    pages
+    author {
+      id
+      name
+      age
+    }
+  }
+}
+
+# Get all authors
+{
+  authors {
+    id
+    name
+    age
+  }
+}
+
+# Update author
+mutation {
+  updateAuthor(id: "606b40dc9640371e601f8a0b", name: "Regita") {
+    id
+  }
+}
