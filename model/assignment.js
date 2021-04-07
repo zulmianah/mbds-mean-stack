@@ -5,9 +5,15 @@ let Schema = mongoose.Schema;
 
 let AssignmentSchema = Schema({
     id: Number,
+    rendu: Boolean,
     dateDeRendu: Date,
     nom: String,
-    rendu: Boolean
+    note: Number,
+    remarques: String,
+    matiere: String,
+    auteur: String,
+    eleve: { type: Schema.Types.ObjectId, ref: 'Utilisateur' },
+    prof: { type: Schema.Types.ObjectId, ref: 'Utilisateur' }
 });
 
 AssignmentSchema.plugin(aggregatePaginate);
