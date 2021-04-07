@@ -1,6 +1,8 @@
 const graphql = require("graphql");
+const graphqlisodate = require("graphql-iso-date");
 const Book = require("../model/book");
 const Author = require("../model/Author");
+const Devoir = require("../model/Devoir");
 
 const {
   GraphQLObjectType,
@@ -10,7 +12,11 @@ const {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLBoolean,
+  GraphQLFloat,
 } = graphql;
+
+const { GraphQLDate } = graphqlisodate;
 
 //Schema defines data on the Graph like object types(book type), relation between
 //these object types and describes how it can reach into the graph to interact with
@@ -44,6 +50,30 @@ const AuthorType = new GraphQLObjectType({
       type: new GraphQLList(BookType),
       resolve(parent, args) {
         return Book.find({ authorID: parent.id });
+      },
+    },
+  }),
+});
+
+const DevoirType = new GraphQLObjectType({
+  name: "Devoir",
+  fields: () => ({
+    id: { type: GraphQLID },
+    note: { type: GraphQLID },
+    remarque: { type: GraphQLString },
+    aRendreLe: { type: GraphQLDate },
+    renduLe: { type: GraphQLDate },
+    rendu: { type: GraphQLBoolean },
+    author: {
+      type: new GraphQLList(AuthorType),
+      resolve(parent, args) {
+        return Author.find(parent.authorID);
+      },
+    },
+    book: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return Book.find(parent.matiereId);
       },
     },
   }),
@@ -86,6 +116,12 @@ const RootQuery = new GraphQLObjectType({
         return Author.find({});
       },
     },
+    devoirs: {
+      type: new GraphQLList(DevoirType),
+      resolve(parent, args) {
+        return Devoir.find({});
+      },
+    },
   },
 });
 
@@ -106,6 +142,30 @@ const Mutation = new GraphQLObjectType({
           age: args.age,
         });
         return author.save();
+      },
+    },
+    addDevoir: {
+      type: DevoirType,
+      args: {
+        note: { type: new GraphQLNonNull(GraphQLFloat) },
+        remarque: { type: new GraphQLNonNull(GraphQLString) },
+        aRendreLe: { type: new GraphQLNonNull(GraphQLDate) },
+        renduLe: { type: new GraphQLNonNull(GraphQLDate) },
+        rendu: { type: new GraphQLNonNull(GraphQLBoolean) },
+        authorId: { type: new GraphQLNonNull(GraphQLString) },
+        matiereId: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        let devoir = new Devoir({
+          note: args.note,
+          remarque: args.remarque,
+          aRendreLe: args.aRendreLe,
+          renduLe: args.renduLe,
+          rendu: args.rendu,
+          authorId: args.authorId,
+          matiereId: args.matiereId,
+        });
+        return devoir.save();
       },
     },
     addBook: {
