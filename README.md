@@ -13,7 +13,7 @@ Backend NodeJS Mongoose pour le cours angular MBDS Madagascar 2021
 - Connection de l'utilisateur
 - Gestion des roles : Admin, Prof, Eleve.
 - Gestion des notes
-- Création d'assignement par classe.
+- Création d'assignement.
 
 ## Demo
 
