@@ -51,6 +51,13 @@ mutation {
   }
 }
 
+# Get all devoirs
+{
+  devoirs {
+    id
+  }
+}
+
 # Update author
 mutation {
   updateAuthor(id: "606b40dc9640371e601f8a0b", name: "Regita") {
