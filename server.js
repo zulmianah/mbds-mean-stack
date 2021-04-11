@@ -1,7 +1,6 @@
 let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
-const schema = require("./schema/schema");
 const { graphqlHTTP } = require("express-graphql");
 let assignment = require("./routes/assignments");
 
@@ -63,17 +62,6 @@ app
   .route(prefix + "/assignments/:id")
   .get(assignment.getAssignment)
   .delete(assignment.deleteAssignment);
-
-app.use(
-  "/graphql",
-  graphqlHTTP({
-    //directing express-graphql to use this schema to map out the graph
-    schema,
-    //directing express-graphql to use graphiql when goto '/graphql' address in the browser
-    //which provides an interface to make GraphQl queries
-    graphiql: true,
-  })
-);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
