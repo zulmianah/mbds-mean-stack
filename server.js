@@ -1,8 +1,15 @@
 let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
-const { graphqlHTTP } = require("express-graphql");
+const dotenv = require("dotenv");
+
+// import routes
 let assignment = require("./routes/assignments");
+const authRoutes = require("./routes/auth");
+const dashboardRoutes = require("./routes/dashboard");
+const verifyToken = require("./routes/validate-token");
+
+dotenv.config();
 
 let mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -10,8 +17,7 @@ mongoose.Promise = global.Promise;
 
 // remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud s
 //const uri = 'mongodb+srv://mb:P7zM3VePm0caWA1L@cluster0.zqtee.mongodb.net/assignments?retryWrites=true&w=majority';
-const uri =
-  "mongodb+srv://admin:root@cluster0.k3e4f.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = process.env.DB_CONNECT;
 
 const options = {
   useNewUrlParser: true,
@@ -62,6 +68,15 @@ app
   .route(prefix + "/assignments/:id")
   .get(assignment.getAssignment)
   .delete(assignment.deleteAssignment);
+
+// middlewares
+app.use(express.json()); // for body parser
+
+// route middlewares
+app.use(prefix + "/user", authRoutes);
+
+// this route is protected with token
+app.use("/api/dashboard", verifyToken, dashboardRoutes);
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
