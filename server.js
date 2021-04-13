@@ -7,11 +7,7 @@ const dotenv = require("dotenv");
 let assignment = require("./routes/assignments");
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
-const {
-  verifyToken,
-  verifyTokenProf,
-  verifyTokenEleve,
-} = require("./routes/validate-token");
+const verifyToken = require("./routes/validate-token");
 
 dotenv.config();
 
