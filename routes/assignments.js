@@ -1,6 +1,8 @@
 // Assignment est le "modèle mongoose", il est connecté à la base de données
 let Assignment = require("../model/assignment");
 
+const { postAssignmentValidation } = require("../services/validation");
+
 /* Version sans pagination */
 // Récupérer tous les assignments (GET)
 /*
@@ -17,7 +19,14 @@ function getAssignments(req, res){
 
 // Récupérer tous les assignments (GET), AVEC PAGINATION
 function getAssignments(req, res) {
-  var aggregateQuery = Assignment.aggregate();
+  var aggregateQuery = null;
+  if (req.body.rendu) {
+    aggregateQuery = Assignment.aggregate([
+      { $match: { rendu: req.body.rendu } },
+    ]);
+  } else {
+    aggregateQuery = Assignment.aggregate();
+  }
   Assignment.aggregatePaginate(
     aggregateQuery,
     {
@@ -47,20 +56,25 @@ function getAssignment(req, res) {
 
 // Ajout d'un assignment (POST)
 function postAssignment(req, res) {
-  let assignment = new Assignment();
-  assignment.id = req.body.id;
-  assignment.nom = req.body.nom;
-  assignment.dateDeRendu = req.body.dateDeRendu;
-  assignment.rendu = req.body.rendu;
+  const { error } = postAssignmentValidation(req.body);
 
-  console.log("POST assignment reçu :");
-  console.log(assignment);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  let assignment = new Assignment();
+  assignment.rendu = req.body.rendu;
+  assignment.dateDeRendu = req.body.dateDeRendu;
+  assignment.renduLe = req.body.renduLe;
+  assignment.note = req.body.note;
+  assignment.remarque = req.body.remarque;
+  assignment.matiere = req.body.matiere;
+  assignment.eleve = req.body.eleve;
+  assignment.prof = req.body.prof;
 
   assignment.save((err) => {
     if (err) {
       res.send("cant post assignment ", err);
     }
-    res.json({ message: `${assignment.nom} saved!` });
+    res.json({ message: `${assignment._id} saved!` });
   });
 }
 

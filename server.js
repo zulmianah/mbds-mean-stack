@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 
 // import routes
 let assignment = require("./routes/assignments");
+let matiere = require("./routes/matieres");
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 const verifyToken = require("./routes/validate-token");
@@ -63,6 +64,8 @@ app
   .get(assignment.getAssignments)
   .post(assignment.postAssignment)
   .put(assignment.updateAssignment);
+
+app.route(prefix + "/matieres").post(matiere.postMatiere);
 
 app
   .route(prefix + "/assignments/:id")
