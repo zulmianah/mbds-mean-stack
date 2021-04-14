@@ -5,7 +5,7 @@ router.get("/", (req, res) => {
     data: {
       title: "My dashboard",
       content: "dashboard content",
-      user: req.user, // token payload information
+      utilisateur: req.user, // token payload information
     },
   });
 });
