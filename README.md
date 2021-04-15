@@ -43,3 +43,6 @@ Le back démarre sur le port . Vérifiez qu'il soit libre.
 - Admin : 'admin' : 'admin'
 - Prof : 'prof' : 'prof'
 - Eleve : 'eleve' : 'eleve'
+
+## Video
+https://youtu.be/bjilWmz6hz8
