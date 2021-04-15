@@ -2,6 +2,8 @@ let express = require("express");
 let app = express();
 let bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const multer = require("multer");
+var path = require("path");
 
 // import routes
 let assignment = require("./routes/assignments");
@@ -80,6 +82,33 @@ app.use(prefix + "/user", authRoutes);
 
 // this route is protected with token
 app.use("/api/dashboard", verifyToken, dashboardRoutes);
+
+// upload img
+//multer options
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./images");
+  },
+
+  filename: function (req, file, cb) {
+    var myPathImages = Date.now() + path.extname(file.originalname);
+    cb(null, myPathImages);
+    this.path = myPathImages;
+  },
+});
+
+var upload = multer({ storage: storage });
+app.post(
+  prefix + "/upload",
+  upload.single("upload"),
+  (req, res) => {
+    res.json(upload);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+// fin upload img
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

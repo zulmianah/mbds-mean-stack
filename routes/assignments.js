@@ -23,9 +23,26 @@ function getAssignments(req, res) {
   if (req.body.rendu) {
     aggregateQuery = Assignment.aggregate([
       { $match: { rendu: req.body.rendu } },
-    ]);
+    ]).pop;
   } else {
-    aggregateQuery = Assignment.aggregate();
+    aggregateQuery = Assignment.aggregate([
+      {
+        $lookup: {
+          from: "matieres",
+          localField: "matiere",
+          foreignField: "_id",
+          as: "matiere",
+        },
+      },
+      {
+        $lookup: {
+          from: "utilisateurs",
+          localField: "eleve",
+          foreignField: "_id",
+          as: "eleve",
+        },
+      },
+    ]);
   }
   Assignment.aggregatePaginate(
     aggregateQuery,
